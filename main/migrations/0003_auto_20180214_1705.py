@@ -7,26 +7,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ('main', '0002_auto_20180214_1026'),
     ]
 
     operations = [
         migrations.RemoveField(
             model_name='match',
-            name='player1',
+            name='result',
         ),
         migrations.AddField(
             model_name='match',
-            name='player1',
-            field=models.ForeignKey(related_name='player1', to='main.Player'),
-        ),
-        migrations.RemoveField(
-            model_name='match',
-            name='player2',
+            name='palyer2_score',
+            field=models.IntegerField(default=0),
         ),
         migrations.AddField(
             model_name='match',
-            name='player2',
-            field=models.ForeignKey(related_name='player2', to='main.Player'),
+            name='player1_score',
+            field=models.IntegerField(default=0),
+        ),
+        migrations.AlterField(
+            model_name='match',
+            name='field',
+            field=models.ForeignKey(related_name='field', to='main.Field'),
         ),
     ]
