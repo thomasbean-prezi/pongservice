@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+    <title id="title">{% block title %}My amazing site{% endblock %}</title>
+</head>
+<body>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

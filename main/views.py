@@ -22,6 +22,6 @@ def players(request):
 
 def player_detail(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
-    return render(request, 'main/player_detail.html', {'player': player}) # i think i should rename player_detail.html to player_detail.html
+    return render(request, 'main/player_detail.html', {'player': player})
 
 

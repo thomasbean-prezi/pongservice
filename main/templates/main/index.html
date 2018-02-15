@@ -1,19 +1,43 @@
+{% extends "main/base.html" %}
+<!--{% if matches %}-->
+    <!--<ul style="list-style-type:none">-->
+    <!--{% for match in matches %}-->
+        <!--<h3>Match number: {{ match.id }}</h3>-->
+        <!--<li> Player 1 was: <a href="/main/players/{{ match.player1.id }}/">{{ match.player1.name }}</a></li>-->
+        <!--<li> Player 2 was: <a href="/main/players/{{ match.player2.id }}/">{{ match.player2.name }}</a></li>-->
+        <!--{% if match.player1_score > match.player2_score %}-->
+            <!--<li> {{match.player1.name}} won {{match.player1_score}} to {{match.player2_score}} what</li>-->
+        <!--{% else %}-->
+            <!--<li> {{match.player2.name}} won {{match.player2_score}} to {{match.player1_score}} what</li>-->
+        <!--{% endif %}-->
+        <!--<li>The field was {{match.field.name}}</li>-->
+        <!--<li>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</li>-->
+    <!--{% endfor %}-->
+    <!--</ul>-->
+<!--{% else %}-->
+    <!--<p>No Matches are available.</p>-->
+<!--{% endif %}-->
+
+{% block title %}My amazing pingpong log{% endblock %}
+
+{% block content %}
 {% if matches %}
-    <ul list-style-type="none" class="list-unstyled"> <!-- how to do inline css... -->
-    {% for match in matches %}
-        <h3>Match number: {{ match.id }}</h3>
-        <li> Player 1 was: <a href="/main/players/{{ match.player1.id }}/">{{ match.player1.name }}</a></li>
-        <li> Player 2 was: <a href="/main/players/{{ match.player2.id }}/">{{ match.player2.name }}</a></li>
-        {% if match.player1_score > match.player2_score %}
-            <li> {{match.player1.name}} won {{match.player1_score}} to {{match.player2_score}} what</li>
-        {% else %}
-            <li> {{match.player2.name}} won {{match.player2_score}} to {{match.player1_score}} what</li>
-        {% endif %}
-        <li>The field was {{match.field.name}}</li>
-        <li>-------------------------------------------------------------------------------------</li>
-    {% endfor %}
+    <ul style="list-style-type:none">
+        {% for match in matches %}
+            <h3>Match number: {{ match.id }}</h3>
+            <li> Player 1 was: <a href="/main/players/{{ match.player1.id }}/">{{ match.player1.name }}</a></li>
+            <li> Player 2 was: <a href="/main/players/{{ match.player2.id }}/">{{ match.player2.name }}</a></li>
+            {% if match.player1_score > match.player2_score %}
+                <li> {{match.player1.name}} won {{match.player1_score}} to {{match.player2_score}} what</li>
+            {% else %}
+                <li> {{match.player2.name}} won {{match.player2_score}} to {{match.player1_score}} what</li>
+            {% endif %}
+            <li>The field was {{match.field.name}}</li>
+            <li>-------------------------------------------------------------------------------------</li>
+        {% endfor %}
     </ul>
 {% else %}
     <p>No Matches are available.</p>
 {% endif %}
+{% endblock %}
 

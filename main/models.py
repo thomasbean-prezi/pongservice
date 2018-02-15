@@ -15,4 +15,4 @@ class Match(models.Model):
     player2 = models.ForeignKey(Player, related_name="player2")
     player1_score = models.IntegerField(default=0)
     palyer2_score = models.IntegerField(default=0)
-    field = models.ForeignKey(Field, related_name="field") #runthrough what related name is for. assuming it should not be the same as the key?
+    field = models.ForeignKey(Field, related_name="field")
