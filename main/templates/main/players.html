@@ -1,0 +1,9 @@
+{% if players %}
+<ul>
+    {% for player in players %}
+    <li><a href="/main/players/{{ player.id }}/">{{ player.name }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No Players are available.</p>
+{% endif %}
