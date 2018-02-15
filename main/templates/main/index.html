@@ -1,7 +1,7 @@
 {% if matches %}
     <ul>
     {% for match in matches %}
-        <li><a href="/main/{{ match.id }}/">Match number: {{ match.id }}</a></li>
+        <li><a href="/main/players/{{ match.id }}/">Match number: {{ match.id }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

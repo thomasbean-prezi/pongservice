@@ -1,7 +1,7 @@
 {% if players %}
 <ul>
     {% for player in players %}
-    <li><a href="/main/players/{{ player.id }}/">{{ player.name }}</a></li>
+    <li><a href="{% url 'main:player_detail' player.id%}">{{ player.name }}</a></li>
     {% endfor %}
 </ul>
 {% else %}
