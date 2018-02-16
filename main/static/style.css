@@ -2,6 +2,15 @@ li a {
     color: green;
 }
 
+body {
+    background: green;
+}
+
+.content {
+    margin: auto;
+    width: 50%;
+}
+
 /*body {*/
     /*background: white url("images/background.jpg") no-repeat center bottom;*/
 /*}*/
