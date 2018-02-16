@@ -1,2 +1,10 @@
-<h1>{{ player.name }}</h1>
+{% extends "main/base.html" %}
+
+{% block subheader %}
+<h3> This is a specific player</h3>
+{% endblock %}
+
+{% block content %}
+<h4>{{ player.name }}</h4>
 <p> {{ player.id}}</p>
+{% endblock %}

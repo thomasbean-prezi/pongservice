@@ -2,15 +2,12 @@ li a {
     color: green;
 }
 
-body {
-    background: green;
+header{
+    margin: auto;
+    text-align: center;
 }
 
-.content {
+body {
     margin: auto;
     width: 50%;
 }
-
-/*body {*/
-    /*background: white url("images/background.jpg") no-repeat center bottom;*/
-/*}*/

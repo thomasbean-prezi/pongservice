@@ -1,9 +1,17 @@
-{% if players %}
-<ul>
-    {% for player in players %}
-    <li><a href="{% url 'main:player_detail' player.id%}">{{ player.name }}</a></li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No Players are available.</p>
-{% endif %}
+{% extends "main/base.html" %}
+
+{% block subheader %}
+<h3> These are all the players</h3>
+{% endblock %}
+
+{% block content %}
+    {% if players %}
+    <ul>
+        {% for player in players %}
+        <li><a href="{% url 'player_detail' player.id%}">{{ player.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No Players are available.</p>
+    {% endif %}
+{% endblock %}

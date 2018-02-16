@@ -5,6 +5,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
     <title id="title">{% block title %}My amazing site{% endblock %}</title>
 </head>
+
+<header>
+    {% block header%}
+    <div id="banner">
+        <h1>The Ping Pong Log Service</h1>
+        <!--<img src="pingpong.jpg" alt="Ping Pong Playa">-->
+    </div>
+    {% endblock%}
+    {% block subheader %}{% endblock %}
+</header>
 <body>
     <div id="content">
         {% block content %}{% endblock %}
