@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
 from .models import *
@@ -18,6 +19,7 @@ def index(request):
             w = match.player2_score
             l = match.player1_score
         results[match.id]={"winner":winner, "loser":loser, "l":l, "w":w}
+    print results
     context = {
         'matches': matches,
         'results': results,
@@ -41,5 +43,12 @@ def fields(request):
 def player_detail(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
     return render(request, 'main/player_detail.html', {'player': player})
+
+def api_players(request):
+    players = Player.objects.all()
+    data = []
+    for player in players:
+        data.append({"id": player.id, "name": player.name})
+    return JsonResponse({"players": data})
 
 
