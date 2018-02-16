@@ -11,3 +11,24 @@ body {
     margin: auto;
     width: 50%;
 }
+
+footer{
+    padding-top: 30px;
+    margin: auto;
+    align: center;
+    /*border-top-color: #5b80b2;*/
+    /*border-top-width: thick;*/
+}
+
+#headerimg{
+    width:128px;
+    height:128px;"
+}
+
+#footergif{
+    width: 70%;
+}
+
+#content{
+    /*background: blue;*/
+}
