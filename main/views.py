@@ -51,4 +51,7 @@ def api_players(request):
         data.append({"id": player.id, "name": player.name})
     return JsonResponse({"players": data})
 
+def api_player_detail(request, player_id):
+    player = get_object_or_404(Player, pk=player_id)
+    return JsonResponse({"id": player.id, "name": player.name})
 
