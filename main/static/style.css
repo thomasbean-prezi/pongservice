@@ -17,6 +17,37 @@ footer{
     text-align: center;
 }
 
+.match-num{
+    text-align: center;
+}
+
+.match-item{
+    background: #7CA0C7;
+    border-radius: 25px;
+}
+
+.table{
+    width: 100%;
+    display: table;
+}
+
+.table-row{
+    display: table-row;
+    display: block;
+}
+
+.main-table-cell{
+    width: 200px;
+    display: table-cell;
+    text-align: center;
+}
+
+.vs-table-cell{
+    width: 20px;
+    display: table-cell;
+    text-align: center;
+}
+
 .pingimg{
     width:128px;
     height:128px;
