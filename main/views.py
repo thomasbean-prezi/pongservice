@@ -123,22 +123,29 @@ def api_matches(request):
         })
     elif request.method == "POST":
         data = json.loads(request.body)
-        if Player.objects.filter(id=data["id"]).exists():
-            p1 = Player.objects.get(id=data["id"])
+        if Player.objects.filter(id=data["player1_id"]).exists():
+            p1 = Player.objects.get(id=data["player1_id"])
         else:
-            HttpResponseBadRequest()
+            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        if Player.objects.filter(id=data["id"]).exists():
-            p2 = Player.objects.get(id=data["id"])
+        if Player.objects.filter(id=data["player2_id"]).exists():
+            p2 = Player.objects.get(id=data["player2_id"])
         else:
-            p2 = Player.objects.create(name=data["player2"])
+            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        if Field.objects.filter(name=data["field"]).exists():
-            field = Field.objects.get(name=data["field"])
+        if Field.objects.filter(id=data["field_id"]).exists():
+            field = Field.objects.get(id=data["field_id"])
         else:
-            field = Field.objects.create(name=data["field"])
-        match = Match.objects.create(date_and_time=datetime.datetime.now(), player1=p1, player2=p2,
-                                     player1_score=data["player1_score"], player2_score=data["player2_score"], field=field)
+            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
+
+        match = Match.objects.create(
+            date_and_time=datetime.datetime.now(),
+            player1=p1,
+            player2=p2,
+            player1_score=data["player1_score"],
+            player2_score=data["player2_score"],
+            field=field
+        )
         return JsonResponse({
             "id": match.id,
             "date_and_time": match.date_and_time,
