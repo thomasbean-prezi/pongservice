@@ -38,7 +38,7 @@ def index(request):
                 "name": loser_name,
                 "score": loser_score,
             },
-            "field" : {
+            "field": {
                 "id": match.field.id,
                 "name": match.field.name,
             }
@@ -73,7 +73,7 @@ def player_detail(request, player_id):
 def api_players(request):
     if request.method == "GET":
         players = Player.objects.all()
-        data = [{"id": player.id, "name": player.name} for player in players] #should I be doing the hanging indents here?
+        data = [{"id": player.id, "name": player.name} for player in players]  # should I be doing the hanging indents here?
         return JsonResponse({"players": data})
     elif request.method == "POST":
         data = json.loads(request.body)
@@ -107,17 +107,18 @@ def api_fields(request):
 def api_matches(request):
     if request.method == "GET":
         matches = Match.objects.all()
-        #where should I put the curly brackets here based on usual BIO conventions
-        data = [
-            {"id": match.id,
-            "date_and_time": match.date_and_time,
-            "player1": match.player1.name,
-            "player2": match.player2.name,
-            "player1_score": match.player1_score,
-            "player2_score": match.player2_score,
-            "field": match.field.name}
-            for match in matches
-        ]
+        # where should I put the curly brackets here based on usual BIO conventions, generally should this be done this way? could be hard to read.
+        data = [{
+                "id": match.id,
+                "date_and_time": match.date_and_time,
+                "player1": match.player1.name,
+                "player2": match.player2.name,
+                "player1_score": match.player1_score,
+                "player2_score": match.player2_score,
+                "field": match.field.name
+                }
+                for match in matches
+                ]
         return JsonResponse({
             "matches": data
         })
@@ -168,7 +169,6 @@ def api_player_detail(request, player_id):
         })
     else:
         return HttpResponseNotAllowed(["GET"])
-
 
 
 def api_field_detail(request, field_id):
