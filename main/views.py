@@ -4,6 +4,9 @@ import datetime
 
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_http_methods
+
 from .models import *
 
 
@@ -70,22 +73,22 @@ def player_detail(request, player_id):
     return render(request, 'main/player_detail.html', {'player': player})
 
 
+@require_http_methods(['GET', 'POST'])
 def api_players(request):
     if request.method == "GET":
         players = Player.objects.all()
-        data = [{"id": player.id, "name": player.name} for player in players]  # should I be doing the hanging indents here?
+        data = [{"id": player.id, "name": player.name} for player in players]
         return JsonResponse({"players": data})
-    elif request.method == "POST":
+    else:
         data = json.loads(request.body)
         player = Player.objects.create(name=data["name"])
         return JsonResponse({
             "id": player.id,
             "name": player.name
         })
-    else:
-        return HttpResponseNotAllowed(["POST", "GET"])
 
 
+@require_http_methods(['GET', 'POST'])
 def api_fields(request):
     if request.method == "GET":
         fields = Field.objects.all()
@@ -93,36 +96,24 @@ def api_fields(request):
         return JsonResponse({
             "fields": data
         })
-    elif request.method == "POST":
+    else:
         data = json.loads(request.body)
         field = Field.objects.create(name=data["name"])
         return JsonResponse({
             "id": field.id,
             "name": field.name
         })
-    else:
-        return HttpResponseNotAllowed(["POST", "GET"])
 
 
+@require_http_methods(['GET', 'POST'])
 def api_matches(request):
     if request.method == "GET":
         matches = Match.objects.all()
-        # where should I put the curly brackets here based on usual BIO conventions, generally should this be done this way? could be hard to read.
-        data = [{
-                "id": match.id,
-                "date_and_time": match.date_and_time,
-                "player1": match.player1.name,
-                "player2": match.player2.name,
-                "player1_score": match.player1_score,
-                "player2_score": match.player2_score,
-                "field": match.field.name
-                }
-                for match in matches
-                ]
+        data = [get_match_details_helper(match) for match in matches]
         return JsonResponse({
             "matches": data
         })
-    elif request.method == "POST":
+    else:
         data = json.loads(request.body)
         if Player.objects.filter(id=data["player1_id"]).exists():
             p1 = Player.objects.get(id=data["player1_id"])
@@ -156,43 +147,46 @@ def api_matches(request):
             "player2_score": match.player2_score,
             "field": match.field.name
         })
-    else:
-        return HttpResponseNotAllowed(["POST", "GET"])
+
+def get_match_details_helper(match):
+    return {
+        "id": match.id,
+        "date_and_time": match.date_and_time,
+        "player1": match.player1.name,
+        "player2": match.player2.name,
+        "player1_score": match.player1_score,
+        "player2_score": match.player2_score,
+        "field": match.field.name
+    }
 
 
+@require_GET
 def api_player_detail(request, player_id):
-    if request.method == "GET":
-        player = get_object_or_404(Player, pk=player_id)
-        return JsonResponse({
-            "id": player.id,
-            "name": player.name
-        })
-    else:
-        return HttpResponseNotAllowed(["GET"])
+    player = get_object_or_404(Player, pk=player_id)
+    return JsonResponse({
+        "id": player.id,
+        "name": player.name
+    })
 
 
+@require_GET
 def api_field_detail(request, field_id):
-    if request.method == "GET":
-        field = get_object_or_404(Field, pk=field_id)
-        return JsonResponse({
-            "id": field.id,
-            "name": field.name
-        })
-    else:
-        return HttpResponseNotAllowed(["GET"])
+    field = get_object_or_404(Field, pk=field_id)
+    return JsonResponse({
+        "id": field.id,
+        "name": field.name
+    })
 
 
+@require_GET
 def api_match_detail(request, match_id):
-    if request.method == "GET":
-        match = get_object_or_404(Match, pk=match_id)
-        return JsonResponse({
-            "id": match.id,
-            "date_and_time": match.date_and_time,
-            "player1": match.player1.name,
-            "player2": match.player2.name,
-            "player1_score": match.player1_score,
-            "player2_score": match.player2_score,
-            "field": match.field.name
-        })
-    else:
-        return HttpResponseNotAllowed(["GET"])
+    match = get_object_or_404(Match, pk=match_id)
+    return JsonResponse({
+        "id": match.id,
+        "date_and_time": match.date_and_time,
+        "player1": match.player1.name,
+        "player2": match.player2.name,
+        "player1_score": match.player1_score,
+        "player2_score": match.player2_score,
+        "field": match.field.name
+    })
