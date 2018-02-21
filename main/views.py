@@ -1,5 +1,4 @@
 import json
-import datetime
 
 
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
@@ -7,8 +6,9 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 
-from .models import *
-from .helper import *
+
+from .models import Player, Field, Match
+from .helpers import get_match_details, remove_invalid_matches
 
 
 def index(request):

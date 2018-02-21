@@ -1,24 +1,27 @@
-
-from .models import *
+from .models import Player, Field, Match
 
 
 def get_invalid_matches():
     matches = Match.objects.all()
     invalid_matches = []
     for match in matches:
-        if(match.player1_score != 11 and match.player2_score != 11):
+        if match.player1_score != 11 and match.player2_score != 11:
             invalid_matches.append(match)
             continue
 
-        if(match.player1_score > 11 or match.player2_score > 11):
+        if match.player1_score == 11 and match.player2_score == 11:
             invalid_matches.append(match)
             continue
 
-        if(match.player1_score < 0 or match.player2_score < 0):
+        if match.player1_score > 11 or match.player2_score > 11:
             invalid_matches.append(match)
             continue
 
-    return(invalid_matches)
+        if match.player1_score < 0 or match.player2_score < 0:
+            invalid_matches.append(match)
+            continue
+
+    return invalid_matches
 
 
 def remove_invalid_matches():
@@ -37,3 +40,11 @@ def get_match_details(match):
         "player2_score": match.player2_score,
         "field": match.field.name
     }
+
+def get_initials(name):
+    if name.strip() == "":
+        return ""
+
+    name_parts = name.split(" ")
+    letters = [part[0] + "." for part in name_parts]
+    return " ".join(letters)
