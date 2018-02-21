@@ -40,11 +40,3 @@ def get_match_details(match):
         "player2_score": match.player2_score,
         "field": match.field.name
     }
-
-def get_initials(name):
-    if name.strip() == "":
-        return ""
-
-    name_parts = name.split(" ")
-    letters = [part[0] + "." for part in name_parts]
-    return " ".join(letters)
