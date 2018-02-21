@@ -2,7 +2,7 @@ li a {
     color: green;
 }
 
-header{
+header {
     margin: auto;
     text-align: center;
 }
@@ -12,23 +12,48 @@ body {
     width: 50%;
 }
 
-footer{
-    padding-top: 30px;
+footer {
     margin: auto;
-    align: center;
-    /*border-top-color: #5b80b2;*/
-    /*border-top-width: thick;*/
+    text-align: center;
 }
 
-#headerimg{
+.match-num {
+    text-align: center;
+}
+
+.match-row-item {
+    background: #7CA0C7;
+    border-radius: 25px;
+}
+
+.table {
+    width: 100%;
+    display: table;
+}
+
+.table-row {
+    display: table-row;
+    display: block;
+}
+
+.main-table-cell {
+    width: 200px;
+    display: table-cell;
+    text-align: center;
+}
+
+.vs-table-cell {
+    width: 20px;
+    display: table-cell;
+    text-align: center;
+}
+
+.pingimg {
     width:128px;
-    height:128px;"
+    height:128px;
 }
 
-#footergif{
-    width: 70%;
-}
-
-#content{
-    /*background: blue;*/
+img:hover {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }

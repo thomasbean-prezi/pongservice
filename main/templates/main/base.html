@@ -4,13 +4,14 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
     <title id="title">{% block title %}My amazing site{% endblock %}</title>
+    <link rel="icon" href="/static/images/pingpongfavicon.png">
 </head>
 
 <header>
     {% block header%}
     <div id="banner">
         <h1>The Ping Pong Log Service</h1>
-        <img id="headerimg" src="/static/images/pingpong.jpg" alt="Ping Pong Playa">
+        <img class="pingimg" src="/static/images/pingpong.jpg" alt="Ping Pong Playa">
     </div>
     {% endblock%}
     {% block subheader %}{% endblock %}
@@ -21,6 +22,6 @@
     </div>
 </body>
 <footer>
-    <!--<img id="footergif" src="https://thumbs.gfycat.com/AnnualIllegalGypsymoth-size_restricted.gif" alt="crazy game gif">-->
+    <img id="footerimg" class="pingimg" src="/static/images/pingpong.jpg" alt="Ping Pong Playa">
 </footer>
 </html>

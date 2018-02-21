@@ -4,23 +4,25 @@
 <h3> These are the matches</h3>
 {% endblock %}
 {% block content %}
-{% if matches %}
-    <ul style="list-style-type:none">
-        {% for match in matches %}
-            <h3>Match number: {{ match.id }}</h3>
-            <li> Player 1 was: <a href="/main/players/{{ match.player1.id }}/">{{ match.player1.name }}</a></li>
-            <li> Player 2 was: <a href="/main/players/{{ match.player2.id }}/">{{ match.player2.name }}</a></li>
-            {% if match.player1_score > match.player2_score %}
-                <li> {{match.player1.name}} won {{match.player1_score}} to {{match.player2_score}} what</li>
-            {% else %}
-                <li> {{match.player2.name}} won {{match.player2_score}} to {{match.player1_score}} what</li>
-            {% endif %}
-            <li>The field was {{match.field.name}}</li>
-            <li>-------------------------------------------------------------------------------------</li>
+{% if results %}
+        {% for result in results %}
+        <div class="match-row-item">
+            <h3 class="match-num">Match {{ result.id }} @ {{result.field.name}}</h3>
+            <div class="table">
+                    <div class="table-row">
+                        <div class="main-table-cell" > <a href="/main/players/{{ result.winner.id }}/">{{ result.winner.name }}</a></div>
+                        <div class="vs-table-cell" > vs </div>
+                        <div class="main-table-cell"> <a href="/main/players/{{ result.loser.id }}/">{{ result.loser.name }}</a></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="main-table-cell"> {{ result.winner.score }} </div>
+                        <div class="vs-table-cell"></div>
+                        <div class="main-table-cell"> {{ result.loser.score }} </div>
+                    </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
 {% else %}
     <p>No Matches are available.</p>
 {% endif %}
 {% endblock %}
-
