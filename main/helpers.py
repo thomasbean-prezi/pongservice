@@ -3,25 +3,19 @@ from .models import Player, Field, Match
 
 def get_invalid_matches():
     matches = Match.objects.all()
-    invalid_matches = []
-    for match in matches:
-        if match.player1_score != 11 and match.player2_score != 11:
-            invalid_matches.append(match)
-            continue
-
-        if match.player1_score == 11 and match.player2_score == 11:
-            invalid_matches.append(match)
-            continue
-
-        if match.player1_score > 11 or match.player2_score > 11:
-            invalid_matches.append(match)
-            continue
-
-        if match.player1_score < 0 or match.player2_score < 0:
-            invalid_matches.append(match)
-            continue
-
+    invalid_matches = [match for match in matches if is_match_invalid(match)]
     return invalid_matches
+
+
+def is_match_invalid(match):
+    score_list = [match.player2_score, match.player1_score]
+    if score_list.count(11) == 1:
+        if  0 <= match.player1_score <= 11 or 0 <= match.player2_score <= 11:
+            return False
+        else:
+            return True
+    else:
+        return True
 
 
 def remove_invalid_matches():
