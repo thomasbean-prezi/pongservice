@@ -109,7 +109,7 @@ def api_fields(request):
 def api_matches(request):
     if request.method == "GET":
         matches = Match.objects.all()
-        data = [get_match_details_helper(match) for match in matches]
+        data = [get_match_details(match) for match in matches]
         return JsonResponse({
             "matches": data
         })
@@ -131,24 +131,15 @@ def api_matches(request):
             return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
         match = Match.objects.create(
-            date_and_time=datetime.datetime.now(),
             player1=p1,
             player2=p2,
             player1_score=data["player1_score"],
             player2_score=data["player2_score"],
             field=field
         )
-        return JsonResponse({
-            "id": match.id,
-            "date_and_time": match.date_and_time,
-            "player1": match.player1.name,
-            "player2": match.player2.name,
-            "player1_score": match.player1_score,
-            "player2_score": match.player2_score,
-            "field": match.field.name
-        })
+        return JsonResponse(get_match_details(match))
 
-def get_match_details_helper(match):
+def get_match_details(match):
     return {
         "id": match.id,
         "date_and_time": match.date_and_time,
@@ -181,12 +172,4 @@ def api_field_detail(request, field_id):
 @require_GET
 def api_match_detail(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
-    return JsonResponse({
-        "id": match.id,
-        "date_and_time": match.date_and_time,
-        "player1": match.player1.name,
-        "player2": match.player2.name,
-        "player1_score": match.player1_score,
-        "player2_score": match.player2_score,
-        "field": match.field.name
-    })
+    return JsonResponse(get_match_details(match))

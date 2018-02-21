@@ -13,7 +13,7 @@ class Field(models.Model):
 
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
-    date_and_time = models.DateField()
+    date_and_time = models.DateField(auto_now_add=True)
     player1 = models.ForeignKey(Player, related_name="player1")
     player2 = models.ForeignKey(Player, related_name="player2")
     player1_score = models.IntegerField(default=0)
