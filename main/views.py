@@ -173,3 +173,6 @@ def api_field_detail(request, field_id):
 def api_match_detail(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
     return JsonResponse(get_match_details(match))
+
+def remove_invalid_matches(request):
+    

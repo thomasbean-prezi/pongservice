@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^api/players/(?P<player_id>[0-9]+)/$', views.api_player_detail, name='api_player_detail'),
     url(r'^api/fields/(?P<field_id>[0-9]+)/$', views.api_field_detail, name='api_field_detail'),
     url(r'^api/matches/(?P<match_id>[0-9]+)/$', views.api_match_detail, name='api_match_detail'),
+    url(r'^api/remove-invalid-matches/$', views.remove_invalid_matches, name='api_remove_invalid_matches'),
 ]
