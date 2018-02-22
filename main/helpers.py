@@ -3,8 +3,8 @@ from .models import Player, Field, Match
 
 def get_invalid_matches():
     matches = Match.objects.all()
-    invalid_matches = [match for match in matches if is_match_invalid(match)]
-    return invalid_matches
+    invalid_match_ids = [match.id for match in matches if is_match_invalid(match)]
+    return invalid_match_ids
 
 
 def is_match_invalid(match):
@@ -19,9 +19,11 @@ def is_match_invalid(match):
 
 
 def remove_invalid_matches():
-    invalid_matches = get_invalid_matches()
-    for match in invalid_matches:
-        match.delete()
+    invalid_match_ids = get_invalid_matches()
+    for match_id in invalid_match_ids:
+        Match.objects.get(pk=match_id).delete()
+
+    return invalid_match_ids
 
 
 def get_match_details(match):
