@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from main.models import Match
-from main.helpers import remove_invalid_matches, get_invalid_matches
+from main.helpers import remove_invalid_matches, get_invalid_match_ids
 
 
 class Command(BaseCommand):
@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['dry_run']:
-            invalid_match_ids = get_invalid_matches()
+            invalid_match_ids = get_invalid_match_ids()
             self.stdout.write("Match.objects.get(pk=<id>).delete() will be called on each of these ids: %s" % invalid_match_ids)
         else:
             invalid_match_ids = remove_invalid_matches()
