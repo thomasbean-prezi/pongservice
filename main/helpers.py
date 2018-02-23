@@ -10,10 +10,7 @@ def get_invalid_matches():
 def is_match_invalid(match):
     score_list = [match.player2_score, match.player1_score]
     if score_list.count(11) == 1:
-        if 0 <= match.player1_score <= 11 and 0 <= match.player2_score <= 11:
-            return False
-        else:
-            return True
+        return not (0 <= match.player1_score <= 11 and 0 <= match.player2_score <= 11)
     else:
         return True
 
