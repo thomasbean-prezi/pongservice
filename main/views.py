@@ -1,6 +1,6 @@
 import json
 
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET, require_POST
@@ -83,14 +83,19 @@ def api_players(request):
     else:
         try:
             data = json.loads(request.body)
+            player = Player.objects.create(name=data["name"])
+            return JsonResponse({
+                "id": player.id,
+                "name": player.name
+            })
         except ValueError:
             data = request.POST
-
-        player = Player.objects.create(name=data["name"])
-        return JsonResponse({
-            "id": player.id,
-            "name": player.name
-        })
+            Player.objects.create(name=data["name"])
+            players = Player.objects.all()
+            context = {
+                'players': players,
+            }
+            return render(request, 'main/players.html', context)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -119,30 +124,44 @@ def api_matches(request):
             "matches": data
         })
     else:
-        data = json.loads(request.body)
-        if Player.objects.filter(id=data["player1_id"]).exists():
-            p1 = Player.objects.get(id=data["player1_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
+        try:
+            data = json.loads(request.body)
+            if Player.objects.filter(id=data["player1_id"]).exists():
+                p1 = Player.objects.get(id=data["player1_id"])
+            else:
+                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        if Player.objects.filter(id=data["player2_id"]).exists():
-            p2 = Player.objects.get(id=data["player2_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
+            if Player.objects.filter(id=data["player2_id"]).exists():
+                p2 = Player.objects.get(id=data["player2_id"])
+            else:
+                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        if Field.objects.filter(id=data["field_id"]).exists():
-            field = Field.objects.get(id=data["field_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
+            if Field.objects.filter(id=data["field_id"]).exists():
+                field = Field.objects.get(id=data["field_id"])
+            else:
+                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        match = Match.objects.create(
-            player1=p1,
-            player2=p2,
-            player1_score=data["player1_score"],
-            player2_score=data["player2_score"],
-            field=field
-        )
-        return JsonResponse(get_match_details(match))
+            match = Match.objects.create(
+                player1=p1,
+                player2=p2,
+                player1_score=data["player1_score"],
+                player2_score=data["player2_score"],
+                field=field
+            )
+            return JsonResponse(get_match_details(match))
+        except ValueError:
+            data = request.POST
+            try:
+                match = Match.objects.create(
+                    player1=Player.objects.get(pk=data["player1"]),
+                    player2=Player.objects.get(pk=data["player2"]),
+                    player1_score=data["player1_score"],
+                    player2_score=data["player2_score"],
+                    field=Field.objects.get(pk=data["field"])
+                )
+                return JsonResponse(get_match_details(match))
+            except ObjectDoesNotExist:
+                return HttpResponse("didn't work")
 
 
 @require_GET
