@@ -161,7 +161,7 @@ def api_matches(request):
                 )
                 return JsonResponse(get_match_details(match))
             except ObjectDoesNotExist:
-                return HttpResponse("didn't work")
+                return HttpResponse("nope. can't do that. wrong player or field id. object does not exist")
 
 
 @require_GET
