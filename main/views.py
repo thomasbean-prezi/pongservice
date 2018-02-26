@@ -167,5 +167,5 @@ def api_match_detail(request, match_id):
 
 @require_POST
 def api_remove_invalid_matches(request):
-    remove_invalid_matches()
-    return HttpResponse("Invalid matches removed")
+    response = remove_invalid_matches()
+    return HttpResponse("The list of invalid ids removed is: " + str(response))
