@@ -1,13 +1,14 @@
 import json
-import datetime
 
 
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 
-from .models import *
+
+from .models import Player, Field, Match
+from .helpers import get_match_details, remove_invalid_matches
 
 
 def index(request):
@@ -139,17 +140,6 @@ def api_matches(request):
         )
         return JsonResponse(get_match_details(match))
 
-def get_match_details(match):
-    return {
-        "id": match.id,
-        "date_and_time": match.date_and_time,
-        "player1": match.player1.name,
-        "player2": match.player2.name,
-        "player1_score": match.player1_score,
-        "player2_score": match.player2_score,
-        "field": match.field.name
-    }
-
 
 @require_GET
 def api_player_detail(request, player_id):
@@ -173,3 +163,9 @@ def api_field_detail(request, field_id):
 def api_match_detail(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
     return JsonResponse(get_match_details(match))
+
+
+@require_POST
+def api_remove_invalid_matches(request):
+    response = remove_invalid_matches()
+    return HttpResponse("The list of invalid ids removed is: " + str(response))
