@@ -81,7 +81,11 @@ def api_players(request):
         data = [{"id": player.id, "name": player.name} for player in players]
         return JsonResponse({"players": data})
     else:
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            data = request.POST
+
         player = Player.objects.create(name=data["name"])
         return JsonResponse({
             "id": player.id,
