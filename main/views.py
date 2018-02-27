@@ -2,54 +2,17 @@ import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 
 
 from .models import Player, Field, Match
-from .helpers import get_match_details, remove_invalid_matches
+from .helpers import get_match_details, remove_invalid_matches, create_new_match, construct_match_results_for_view
 
 
 def index(request):
-    matches = Match.objects.all()
-    results = []
-    for match in matches:
-        if match.player1_score > match.player2_score:
-            winner_name = match.player1.name
-            winner_id = match.player1.id
-            loser_name = match.player2.name
-            loser_id = match.player2.id
-            winner_score = match.player1_score
-            loser_score = match.player2_score
-        else:
-            winner_name = match.player2.name
-            winner_id = match.player2.id
-            loser_name = match.player1.name
-            loser_id = match.player1.id
-            winner_score = match.player2_score
-            loser_score = match.player1_score
-        results.append({
-            "id": match.id,
-            "date": match.date_and_time,
-            "winner": {
-                "id": winner_id,
-                "name": winner_name,
-                "score": winner_score,
-            },
-            "loser": {
-                "id": loser_id,
-                "name": loser_name,
-                "score": loser_score,
-            },
-            "field": {
-                "id": match.field.id,
-                "name": match.field.name,
-            }
-        })
-    context = {
-        'results': results,
-    }
+    context = construct_match_results_for_view()
     return render(request, 'main/index.html', context)
 
 
@@ -91,11 +54,7 @@ def api_players(request):
         except ValueError:
             data = request.POST
             Player.objects.create(name=data["name"])
-            players = Player.objects.all()
-            context = {
-                'players': players,
-            }
-            return render(request, 'main/players.html', context)
+            return redirect('players')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -126,42 +85,18 @@ def api_matches(request):
     else:
         try:
             data = json.loads(request.body)
-            if Player.objects.filter(id=data["player1_id"]).exists():
-                p1 = Player.objects.get(id=data["player1_id"])
-            else:
-                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
-
-            if Player.objects.filter(id=data["player2_id"]).exists():
-                p2 = Player.objects.get(id=data["player2_id"])
-            else:
-                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
-
-            if Field.objects.filter(id=data["field_id"]).exists():
-                field = Field.objects.get(id=data["field_id"])
-            else:
-                return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
-
-            match = Match.objects.create(
-                player1=p1,
-                player2=p2,
-                player1_score=data["player1_score"],
-                player2_score=data["player2_score"],
-                field=field
-            )
-            return JsonResponse(get_match_details(match))
+            try:
+                create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+                return redirect('main')
+            except KeyError:
+                return HttpResponse("Whoopsie. You tried to create a match with some invalid ids for players and/or field")
         except ValueError:
             data = request.POST
             try:
-                match = Match.objects.create(
-                    player1=Player.objects.get(pk=data["player1"]),
-                    player2=Player.objects.get(pk=data["player2"]),
-                    player1_score=data["player1_score"],
-                    player2_score=data["player2_score"],
-                    field=Field.objects.get(pk=data["field"])
-                )
-                return JsonResponse(get_match_details(match))
+                create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+                return redirect('main')
             except ObjectDoesNotExist:
-                return HttpResponse("nope. can't do that. wrong player or field id. object does not exist")
+                return HttpResponse("Nope. Can't do that. Wrong player and/or field id. Object does not exist")
 
 
 @require_GET
