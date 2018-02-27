@@ -2,80 +2,66 @@ import unittest
 
 
 from main.models import Player, Field, Match
+<<<<<<< Updated upstream
 from helpers import get_invalid_matches, remove_invalid_matches
+=======
+from helpers import get_invalid_match_ids, remove_invalid_matches, create_new_match
+>>>>>>> Stashed changes
 
 
 class GetInvalidMatchesTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.p1 = Player.objects.create(name="Tom")
-        cls.p2 = Player.objects.create(name="Marca")
+        cls.player1 = Player.objects.create(name="Tom")
+        cls.player2 = Player.objects.create(name="Marca")
         cls.field = Field.objects.create(name="Bio lounge")
 
     def tearDown(self):
         Match.objects.all().delete()
 
     def test_one_invalid_match(self):
-        match = self.create_match(13, 17)
-        self.assertEqual(get_invalid_matches(), [match])
+        match = create_new_match(self.player1.id, self.player2.id, 13, 17, self.field.id)
+        self.assertEqual(get_invalid_match_ids(), [match.id])
 
     def test_multiple_invalid_matches(self):
-        match = self.create_match(11, 11)
-        match2 = self.create_match(11, -1)
-        self.assertEqual(len(get_invalid_matches()), 2)
+        match = create_new_match(self.player1.id, self.player2.id, 11, 11, self.field.id)
+        match2 = create_new_match(self.player1.id, self.player2.id, 11, -1, self.field.id)
+        self.assertEqual(len(get_invalid_match_ids()), 2)
 
     def test_no_matches(self):
         self.assertEqual(get_invalid_matches(), [])
 
     def test_one_valid_match(self):
-        match = self.create_match(11, 10)
-        self.assertEqual(get_invalid_matches(), [])
+        match = create_new_match(self.player1.id, self.player2.id, 11, 10, self.field.id)
+        self.assertEqual(get_invalid_match_ids(), [])
 
     def test_invalid_and_valid_match(self):
-        match1 = self.create_match(11, 10)
-        match = self.create_match(12, 10)
-        self.assertEqual(get_invalid_matches(), [match])
+        match1 = create_new_match(self.player1.id, self.player2.id, 11, 10, self.field.id)
+        match = create_new_match(self.player1.id, self.player2.id, 12, 10, self.field.id)
+        self.assertEqual(get_invalid_match_ids(), [match.id])
 
     def test_same_score(self):
-        match = self.create_match(10, 10)
-        self.assertEqual(get_invalid_matches(), [match])
+        match = create_new_match(self.player1.id, self.player2.id, 10, 10, self.field.id)
+        self.assertEqual(get_invalid_match_ids(), [match.id])
 
     def test_same_winning_score(self):
-        match = self.create_match(11, 11)
-        self.assertEqual(get_invalid_matches(), [match])
-
-    def create_match(self, p1_score, p2_score):
-        return Match.objects.create(
-            player1=self.p1,
-            player2=self.p2,
-            player1_score=p1_score,
-            player2_score=p2_score,
-            field=self.field
-        )
+        match = create_new_match(self.player1.id, self.player2.id, 11, 11, self.field.id)
+        self.assertEqual(get_invalid_match_ids(), [match.id])
 
 
 class RemoveInvalidMatchesTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.p1 = Player.objects.create(name="Tom")
-        cls.p2 = Player.objects.create(name="Marca")
+        cls.player1 = Player.objects.create(name="Tom")
+        cls.player2 = Player.objects.create(name="Marca")
         cls.field = Field.objects.create(name="Bio Lounge")
 
     def tearDown(self):
         Match.objects.all().delete()
 
     def test_only_invalid_removal(self):
-        match1 = self.create_match(11, 10)
+        match1 = create_new_match(self.player1.id, self.player2.id, 11, 10, self.field.id)
         match1_id = match1.id
-        match = self.create_match(12, 10)
+        match = create_new_match(self.player1.id, self.player2.id, 12, 10, self.field.id)
         invalid_ids = remove_invalid_matches()
         self.assertEqual(match1_id, Match.objects.first().id)
-
-    def create_match(self, p1_score, p2_score):
-        return Match.objects.create(
-            player1=self.p1,
-            player2=self.p2,
-            player1_score=p1_score,
-            player2_score=p2_score,
-            field=self.field
-        )
