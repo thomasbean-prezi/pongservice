@@ -2,7 +2,7 @@ import unittest
 
 
 from main.models import Player, Field, Match
-from helpers import get_invalid_match_ids, remove_invalid_matches
+from helpers import get_invalid_matches, remove_invalid_matches
 
 
 class GetInvalidMatchesTestCase(unittest.TestCase):
@@ -17,32 +17,32 @@ class GetInvalidMatchesTestCase(unittest.TestCase):
 
     def test_one_invalid_match(self):
         match = self.create_match(13, 17)
-        self.assertEqual(get_invalid_match_ids(), [match.id])
+        self.assertEqual(get_invalid_matches(), [match])
 
     def test_multiple_invalid_matches(self):
         match = self.create_match(11, 11)
         match2 = self.create_match(11, -1)
-        self.assertEqual(len(get_invalid_match_ids()), 2)
+        self.assertEqual(len(get_invalid_matches()), 2)
 
     def test_no_matches(self):
-        self.assertEqual(get_invalid_match_ids(), [])
+        self.assertEqual(get_invalid_matches(), [])
 
     def test_one_valid_match(self):
         match = self.create_match(11, 10)
-        self.assertEqual(get_invalid_match_ids(), [])
+        self.assertEqual(get_invalid_matches(), [])
 
     def test_invalid_and_valid_match(self):
         match1 = self.create_match(11, 10)
         match = self.create_match(12, 10)
-        self.assertEqual(get_invalid_match_ids(), [match.id])
+        self.assertEqual(get_invalid_matches(), [match])
 
     def test_same_score(self):
         match = self.create_match(10, 10)
-        self.assertEqual(get_invalid_match_ids(), [match.id])
+        self.assertEqual(get_invalid_matches(), [match])
 
     def test_same_winning_score(self):
         match = self.create_match(11, 11)
-        self.assertEqual(get_invalid_match_ids(), [match.id])
+        self.assertEqual(get_invalid_matches(), [match])
 
     def create_match(self, p1_score, p2_score):
         return Match.objects.create(
