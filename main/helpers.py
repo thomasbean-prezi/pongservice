@@ -33,3 +33,13 @@ def get_match_details(match):
         "player2_score": match.player2_score,
         "field": match.field.name
     }
+
+
+def create_new_match(p1_id, p2_id, p1_score, p2_score, field_id):
+    return Match.objects.create(
+        player1=Player.objects.get(pk=p1_id),
+        player2=Player.objects.get(pk=p2_id),
+        player1_score=p1_score,
+        player2_score=p2_score,
+        field=Field.objects.get(pk=field_id)
+    )

@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+    <form action="{% url 'new_player_form'%}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="name" id="name" placeholder="player name" />
+        <input type="submit" value="Create Player" />
+    </form>
     {% if players %}
     <ul>
         {% for player in players %}

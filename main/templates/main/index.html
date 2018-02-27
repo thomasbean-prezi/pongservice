@@ -4,6 +4,27 @@
 <h3> These are the matches</h3>
 {% endblock %}
 {% block content %}
+<form action="{% url 'new_match_form'%}" method="POST">
+    {% csrf_token %}
+    <select name="player1">
+        {% for id in player_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
+    <select name="player2">
+        {% for id in player_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
+    <input type="number" max=11 min=0 name="player1_score" id="player1_score" placeholder="player1 score" />
+    <input type="number" max=11 min=0 name="player2_score" id="player2_score" placeholder="player2 score" />
+    <select name="field"/>
+        {% for id in field_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
+    <input type="submit" value="Create Match" />
+</form>
 {% if results %}
         {% for result in results %}
         <div class="match-row-item">

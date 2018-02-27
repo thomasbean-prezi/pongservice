@@ -1,18 +1,22 @@
 import json
 
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.http import require_http_methods
 
 
 from .models import Player, Field, Match
-from .helpers import get_match_details, remove_invalid_matches
+from .helpers import get_match_details, remove_invalid_matches, create_new_match
 
 
 def index(request):
     matches = Match.objects.all()
+    players = Player.objects.all()
+    fields = Field.objects.all()
+    field_ids = [field.id for field in fields]
+    player_ids = [player.id for player in players]
     results = []
     for match in matches:
         if match.player1_score > match.player2_score:
@@ -49,6 +53,8 @@ def index(request):
         })
     context = {
         'results': results,
+        'player_ids': player_ids,
+        'field_ids': field_ids,
     }
     return render(request, 'main/index.html', context)
 
@@ -89,6 +95,13 @@ def api_players(request):
         })
 
 
+@require_POST
+def new_player_form(request):
+    data = request.POST
+    Player.objects.create(name=data["name"])
+    return redirect('players')
+
+
 @require_http_methods(['GET', 'POST'])
 def api_fields(request):
     if request.method == "GET":
@@ -116,29 +129,21 @@ def api_matches(request):
         })
     else:
         data = json.loads(request.body)
-        if Player.objects.filter(id=data["player1_id"]).exists():
-            p1 = Player.objects.get(id=data["player1_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
+        try:
+            create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+            return redirect('main')
+        except KeyError:
+            return HttpResponse("Whoopsie. You tried to create a match with some invalid ids for players and/or field")
 
-        if Player.objects.filter(id=data["player2_id"]).exists():
-            p2 = Player.objects.get(id=data["player2_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
 
-        if Field.objects.filter(id=data["field_id"]).exists():
-            field = Field.objects.get(id=data["field_id"])
-        else:
-            return HttpResponseBadRequest("Bad request: You tried to create a match with a player that doesn't exist yet.")
-
-        match = Match.objects.create(
-            player1=p1,
-            player2=p2,
-            player1_score=data["player1_score"],
-            player2_score=data["player2_score"],
-            field=field
-        )
-        return JsonResponse(get_match_details(match))
+@require_POST
+def new_match_form(request):
+    data = request.POST
+    try:
+        create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+        return redirect('main')
+    except ObjectDoesNotExist:
+        return HttpResponse("Nope. Can't do that. Wrong player and/or field id. Object does not exist")
 
 
 @require_GET
