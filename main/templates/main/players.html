@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action="{% url 'api_players'%}" method="POST">
+    <form action="{% url 'new_player_form'%}" method="POST">
         {% csrf_token %}
         <input type="json" name="name" id="name" placeholder="player name" />
         <input type="submit" value="Create Player" />

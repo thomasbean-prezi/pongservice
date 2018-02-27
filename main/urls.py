@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^api/fields/(?P<field_id>[0-9]+)/$', views.api_field_detail, name='api_field_detail'),
     url(r'^api/matches/(?P<match_id>[0-9]+)/$', views.api_match_detail, name='api_match_detail'),
     url(r'^api/remove-invalid-matches/$', views.api_remove_invalid_matches, name='api_remove_invalid_matches'),
+    url(r'^new-player-form/$', views.new_player_form, name='new_player_form'),
+    url(r'^new-match-form/$', views.new_match_form, name='new_match_form'),
 ]

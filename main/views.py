@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 
 
 from .models import Player, Field, Match
-from .helpers import get_match_details, remove_invalid_matches, create_new_match, construct_match_results_for_view
+from .helpers import get_match_details, remove_invalid_matches, create_new_match
 
 
 def index(request):
@@ -81,17 +81,19 @@ def api_players(request):
         data = [{"id": player.id, "name": player.name} for player in players]
         return JsonResponse({"players": data})
     else:
-        try:
-            data = json.loads(request.body)
-            player = Player.objects.create(name=data["name"])
-            return JsonResponse({
-                "id": player.id,
-                "name": player.name
-            })
-        except ValueError:
-            data = request.POST
-            Player.objects.create(name=data["name"])
-            return redirect('players')
+        data = json.loads(request.body)
+        player = Player.objects.create(name=data["name"])
+        return JsonResponse({
+            "id": player.id,
+            "name": player.name
+        })
+
+
+@require_POST
+def new_player_form(request):
+    data = request.POST
+    Player.objects.create(name=data["name"])
+    return redirect('players')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -120,20 +122,22 @@ def api_matches(request):
             "matches": data
         })
     else:
+        data = json.loads(request.body)
         try:
-            data = json.loads(request.body)
-            try:
-                create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
-                return redirect('main')
-            except KeyError:
-                return HttpResponse("Whoopsie. You tried to create a match with some invalid ids for players and/or field")
-        except ValueError:
-            data = request.POST
-            try:
-                create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
-                return redirect('main')
-            except ObjectDoesNotExist:
-                return HttpResponse("Nope. Can't do that. Wrong player and/or field id. Object does not exist")
+            create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+            return redirect('main')
+        except KeyError:
+            return HttpResponse("Whoopsie. You tried to create a match with some invalid ids for players and/or field")
+
+
+@require_POST
+def new_match_form(request):
+    data = request.POST
+    try:
+        create_new_match(data["player1"], data["player2"], data["player1_score"], data["player2_score"], data["field"])
+        return redirect('main')
+    except ObjectDoesNotExist:
+        return HttpResponse("Nope. Can't do that. Wrong player and/or field id. Object does not exist")
 
 
 @require_GET
