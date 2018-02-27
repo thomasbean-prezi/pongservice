@@ -12,7 +12,44 @@ from .helpers import get_match_details, remove_invalid_matches, create_new_match
 
 
 def index(request):
-    context = construct_match_results_for_view()
+    matches = Match.objects.all()
+    results = []
+    for match in matches:
+        if match.player1_score > match.player2_score:
+            winner_name = match.player1.name
+            winner_id = match.player1.id
+            loser_name = match.player2.name
+            loser_id = match.player2.id
+            winner_score = match.player1_score
+            loser_score = match.player2_score
+        else:
+            winner_name = match.player2.name
+            winner_id = match.player2.id
+            loser_name = match.player1.name
+            loser_id = match.player1.id
+            winner_score = match.player2_score
+            loser_score = match.player1_score
+        results.append({
+            "id": match.id,
+            "date": match.date_and_time,
+            "winner": {
+                "id": winner_id,
+                "name": winner_name,
+                "score": winner_score,
+            },
+            "loser": {
+                "id": loser_id,
+                "name": loser_name,
+                "score": loser_score,
+            },
+            "field": {
+                "id": match.field.id,
+                "name": match.field.name,
+            }
+        })
+    context = {
+        'results': results,
+    }
     return render(request, 'main/index.html', context)
 
 
