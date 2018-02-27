@@ -13,6 +13,10 @@ from .helpers import get_match_details, remove_invalid_matches, create_new_match
 
 def index(request):
     matches = Match.objects.all()
+    players = Player.objects.all()
+    fields = Field.objects.all()
+    field_ids = [field.id for field in fields]
+    player_ids = [player.id for player in players]
     results = []
     for match in matches:
         if match.player1_score > match.player2_score:
@@ -49,6 +53,8 @@ def index(request):
         })
     context = {
         'results': results,
+        'player_ids': player_ids,
+        'field_ids': field_ids,
     }
     return render(request, 'main/index.html', context)
 

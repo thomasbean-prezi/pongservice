@@ -6,11 +6,23 @@
 {% block content %}
 <form action="{% url 'new_match_form'%}" method="POST">
     {% csrf_token %}
-    <input type="json" name="player1" id="player1" placeholder="player1 id" />
-    <input type="json" name="player1_score" id="player1_score" placeholder="player1 score" />
-    <input type="json" name="player2" id="player2" placeholder="player2 id" />
-    <input type="json" name="player2_score" id="player2_score" placeholder="player2 score" />
-    <input type="json" name="field" id="field" placeholder="field id" />
+    <select name="player1">
+        {% for id in player_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
+    <select name="player2">
+        {% for id in player_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
+    <input type="number" max=11 min=0 name="player1_score" id="player1_score" placeholder="player1 score" />
+    <input type="number" max=11 min=0 name="player2_score" id="player2_score" placeholder="player2 score" />
+    <select name="field"/>
+        {% for id in field_ids %}
+        <option>{{ id }}</option>
+        {% endfor %}}
+    </select>
     <input type="submit" value="Create Match" />
 </form>
 {% if results %}
