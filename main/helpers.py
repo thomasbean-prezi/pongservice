@@ -1,25 +1,26 @@
 from .models import Player, Field, Match
 
 
-def get_invalid_match_ids():
+def get_invalid_matches():
     matches = Match.objects.all()
-    invalid_match_ids = [match.id for match in matches if is_match_invalid(match)]
-    return invalid_match_ids
+    invalid_matches = [match for match in matches if not is_match_valid(match)]
+    return invalid_matches
 
 
-def is_match_invalid(match):
+def is_match_valid(match):
     score_list = [match.player2_score, match.player1_score]
-    if score_list.count(11) == 1:
-        return not (0 <= match.player1_score <= 11 and 0 <= match.player2_score <= 11)
-    else:
-        return True
+    is_exactly_one_winner = score_list.count(11) == 1
+    is_player1_score_valid = 0 <= match.player1_score <= 11
+    is_player2_score_valid = 0 <= match.player2_score <= 11
+    return is_exactly_one_winner and is_player1_score_valid and is_player2_score_valid
 
 
 def remove_invalid_matches():
-    invalid_match_ids = get_invalid_match_ids()
-    for match_id in invalid_match_ids:
-        Match.objects.get(pk=match_id).delete()
-
+    invalid_matches = get_invalid_matches()
+    invalid_match_ids = []
+    for match in invalid_matches:
+        invalid_match_ids.append(match.id)
+        match.delete()
     return invalid_match_ids
 
 
